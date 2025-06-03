@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Researcher View - Study Dashboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+  }
+  header {
+    background: #004080;
+    color: white;
+    padding: 10px 20px;
+    font-size: 22px;
+  }
+  nav {
+    display: flex;
+    background: #eee;
+    border-bottom: 1px solid #ccc;
+  }
+  nav button {
+    flex: 1;
+    padding: 12px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  nav button:hover {
+    background-color: #ddd;
+  }
+  nav button.active {
+    background-color: #004080;
+    color: white;
+  }
+  .tab-content {
+    display: none;
+    padding: 20px;
+    background: white;
+    min-height: 600px;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  /* Enrollment subtabs */
+  .subtabs {
+    margin-top: 10px;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+  }
+  .subtabs button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: none;
+    font-weight: bold;
+  }
+  .subtabs button.active {
+    border-bottom-color: #004080;
+    color: #004080;
+  }
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    background-color: #004080;
+    color: white;
+  }
+  /* Button styling */
+  .btn {
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 10px;
+  }
+  .btn:hover {
+    background-color: #003060;
+  }
+  /* Form inline style */
+  .form-inline {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-inline label {
+    min-width: 120px;
+    font-weight: bold;
+  }
+  .form-inline input[type="text"],
+  .form-inline input[type="date"],
+  .form-inline input[type="time"],
+  .form-inline select {
+    padding: 5px;
+    width: 200px;
+  }
+  textarea {
+    width: 100%;
+    height: 120px;
+    padding: 8px;
+    margin-top: 8px;
+    font-family: Arial, sans-serif;
+  }
+  .scroll-table {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+  }
+  /* Budget input style */
+  .budget-table input[type="number"] {
+    width: 100px;
+    padding: 5px;
+  }
+  /* Calendar style for follow-up */
+  .calendar-week {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .calendar-day {
+    background: #eee;
+    border-radius: 5px;
+    flex: 1;
+    min-height: 150px;
+    padding: 10px;
+  }
+  .calendar-day h4 {
+    margin: 0 0 10px;
+  }
+  .appointment {
+    background: #004080;
+    color: white;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>Researcher Dashboard - Study Management</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+  <button class="tab-btn" data-tab="enrollment">Enrollment</button>
+  <button class="tab-btn" data-tab="microrandomization">Microrandomization</button>
+  <button class="tab-btn" data-tab="intervention-messages">Intervention Messages</button>
+  <button class="tab-btn" data-tab="surveys">Daily Surveys</button>
+  <button class="tab-btn" data-tab="follow-up">Follow-Up</button>
+  <button class="tab-btn" data-tab="risk-management">Risk Management</button>
+  <button class="tab-btn" data-tab="logbook">LogBook</button>
+  <button class="tab-btn" data-tab="budget">Study Budget Management</button>
+</nav>
+
+<!-- Dashboard Tab -->
+<section id="dashboard" class="tab-content active">
+  <h2>Dashboard</h2>
+  <button class="btn" id="addParticipantBtn">Add Participant</button>
+
+  <div style="margin-top:20px;">
+    <h3>Recruitment Tracker</h3>
+    <p><strong>Enrolled Participants (Phase 2):</strong> 40 / 120</p>
+    <p><strong>Completed Study:</strong> 15 / 120</p>
+    <div style="background:#ddd; height:25px; border-radius: 5px; overflow: hidden; width: 100%; max-width: 600px;">
+      <div style="width:33%; background:#004080; height:100%;"></div>
+    </div>
+    <p>Recruitment Timeline & Milestones:</p>
+    <ul>
+      <li>Start: Jan 1, 2025</li>
+      <li>Midpoint: Apr 1, 2025</li>
+      <li>Goal Completion: Dec 31, 2025</li>
+    </ul>
+  </div>
+</section>
+
+<!-- Enrollment Tab -->
+<section id="enrollment" class="tab-content">
+  <h2>Enrollment</h2>
+
+  <div class="subtabs">
+    <button class="subtab-btn active" data-subtab="phase1">Phase 1</button>
+    <button class="subtab-btn" data-subtab="phase2">Phase 2</button>
+  </div>
+
+  <div id="phase1" class="subtab-content" style="margin-top:15px;">
+    <h3>Phase 1</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Study ID</th>
+      <th>Consent</th>
+      <th>Baseline</th>
+      <th>eSP</th>
+      <th>Provider Notes</th>
+      <th>Chart Review</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>00123</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>⏳</td>
+      <td><textarea placeholder="Provider notes..."></textarea></td>
+      <td><a href="#">Open Chart Review</a></td>
+    </tr>
+    <!-- Add more rows for additional participants as needed -->
+  </tbody>
+</table>
+  </div>
+
+  <div id="phase2" class="subtab-content" style="display:none; margin-top:15px;">
+    <h3>Phase 2 Participants</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Study ID</th>
+          <th>Randomization Group</th>
+          <th>Status</th>
+          <th>Send Message</th>
+        </tr>
+      </thead>
+      <tbody id="phase2List">
+        <tr>
+          <td>P101</td>
+          <td>MRT</td>
+          <td>In Progress</td>
+          <td><button class="btn" onclick="alert('Send message to P101')">Send Message</button></td>
+        </tr>
+        <tr>
+          <td>P103</td>
+          <td>Control</td>
+          <td>In Progress</td>
+          <td><button class="btn" onclick="alert('Send message to P103')">Send Message</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Microrandomization Tab -->
+<section id="microrandomization" class="tab-content">
+  <h2>Microrandomization</h2>
+  <p>60% chance to receive message in morning and evening.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Participant ID</th>
+        <th>Randomization Group</th>
+        <th>Morning Message?</th>
+        <th>Evening Message?</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>P101</td>
+        <td>MRT</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td><button class="btn" onclick="alert('Adjust microrandomization for P101')">Adjust</button></td>
+      </tr>
+      <tr>
+        <td>P103</td>
+        <td>Control</td>
+        <td>No</td>
+        <td>Yes</td>
+        <td><button class="btn" onclick="alert('Adjust microrandomization for P103')">Adjust</button></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Intervention Messages Tab -->
+<section id="intervention-messages" class="tab-content">
+  <h2>Intervention Messages</h2>
+
+  <!-- 📦 Message Repository Intro -->
+  <div>
+    <p>This section contains a repository of all text messages used in the intervention, categorized by:</p>
+    <ul>
+      <li><strong>eSP Tailored</strong> vs. <strong>Non-eSP Tailored</strong></li>
+      <li><strong>Dynamic Personalized Feedback</strong> vs. <strong>Static Messages</strong></li>
+    </ul>
+  </div>
+
+  <!-- 🔽 Dropdown to Select Participant -->
+  <div class="form-inline" style="margin-bottom: 10px;">
+    <label for="participantSelect">View/Edit Pre-randomized Messages for ID:</label>
+    <select id="participantSelect" onchange="populateMessages()">
+      <option value="">Select ID</option>
+      <option value="P101">P101</option>
+      <option value="P102">P102</option>
+      <option value="P103">P103</option>
+    </select>
+  </div>
+
+  <!-- 📄 Pre-randomized Messages List -->
+  <div id="messageContainer" style="display:none; margin-bottom: 30px;">
+    <h3>Pre-randomized Editable Messages</h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Message Content</th></tr>
+      </thead>
+      <tbody id="messageList">
+        <!-- Dynamically inserted rows -->
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <!-- ✉️ Manual Message Sender -->
+  <h3>Send Individual Message</h3>
+
+  <div class="form-inline">
+    <label for="messageParticipant">Participant ID:</label>
+    <input type="text" id="messageParticipant" placeholder="e.g. P101" />
+  </div>
+
+  <div>
+    <label for="messageText"><strong>Message Text:</strong></label>
+    <textarea id="messageText" placeholder="Write your message here..."></textarea>
+  </div>
+
+  <div class="form-inline">
+    <label for="sendNow">Send Now</label>
+    <input type="checkbox" id="sendNow" checked onchange="toggleSchedule()" />
+  </div>
+
+  <div id="scheduleContainer" style="display:none; margin-top: 10px;">
+    <div class="form-inline">
+      <label for="scheduleDate">Schedule Date:</label>
+      <input type="date" id="scheduleDate" />
+      <label for="scheduleTime">Schedule Time:</label>
+      <input type="time" id="scheduleTime" />
+    </div>
+  </div>
+
+  <button class="btn" id="sendMessageBtn">Send Message</button>
+
+  <!-- 🕘 History Table -->
+  <h3 style="margin-top: 30px;">Message History</h3>
+  <div class="scroll-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Participant ID</th>
+          <th>Message</th>
+          <th>Sent At</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="messageHistoryBody">
+        <tr>
+          <td>P101</td>
+          <td>Remember to complete today's survey.</td>
+          <td>2025-06-01 09:00 AM</td>
+          <td>Sent</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  function toggleSchedule() {
+    const sendNow = document.getElementById('sendNow').checked;
+    document.getElementById('scheduleContainer').style.display = sendNow ? 'none' : 'block';
+  }
+
+  function populateMessages() {
+    const participantId = document.getElementById('participantSelect').value;
+    const container = document.getElementById('messageContainer');
+    const list = document.getElementById('messageList');
+
+    list.innerHTML = '';
+
+    if (!participantId) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+
+    for (let i = 1; i <= 30; i++) {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${i}</td>
+        <td><textarea>Insert personalized text message ${i}</textarea></td>
+      `;
+      list.appendChild(row);
+    }
+  }
+</script>
+<!-- Daily Surveys Tab -->
+<section id="surveys" class="tab-content">
+  <h2>Daily Surveys</h2>
+
+  <div class="form-inline">
+    <label for="surveyStartDate">Start Date:</label>
+    <input type="date" id="surveyStartDate" />
+  </div>
+
+  <div class="form-inline" style="margin-top:10px;">
+    <label for="surveyEndDate">End Date (auto-calculated):</label>
+    <input type="date" id="surveyEndDate" readonly />
+  </div>
+
+  <button class="btn" id="activateDailySurveysBtn" style="margin-top: 15px;">Activate Daily Surveys</button>
+
+  </div>
+
+  <script>
+    // Auto-calculate end date 4 weeks from start date
+    const startDateInput = document.getElementById('surveyStartDate');
+    const endDateInput = document.getElementById('surveyEndDate');
+
+    startDateInput.addEventListener('change', () => {
+      if (startDateInput.value) {
+        const startDate = new Date(startDateInput.value);
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 28); // 4 weeks = 28 days
+        // Format date as yyyy-mm-dd
+        const yyyy = endDate.getFullYear();
+        const mm = String(endDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(endDate.getDate()).padStart(2, '0');
+        endDateInput.value = `${yyyy}-${mm}-${dd}`;
+      } else {
+        endDateInput.value = '';
+      }
+    });
+  </script>
+</section>
+
+<!-- Follow-Up Tab -->
+<section id="follow-up" class="tab-content">
+  <h2>Follow-Up Interviews</h2>
+  <p>This section shows weekly calendar of confirmed appointments.</p>
+
+  <div class="calendar-week" id="calendarWeek">
+    <div class="calendar-day">
+      <h4>Monday</h4>
+      <div class="appointments" id="mondayAppointments"></div>
+    </div>
+    <div class="calendar-day">
+      <h4>Tuesday</h4>
+      <div class="appointments" id="tuesdayAppointments"></div>
+    </div>
+    <div class="calendar-day">
+      <h4>Wednesday</h4>
+      <div class="appointments" id="wednesdayAppointments"></div>
+    </div>
+    <div class="calendar-day">
+      <h4>Thursday</h4>
+      <div class="appointments" id="thursdayAppointments"></div>
+    </div>
+    <div class="calendar-day">
+      <h4>Friday</h4>
+      <div class="appointments" id="fridayAppointments"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Risk Management Tab -->
+<section id="risk-management" class="tab-content">
+  <h2>Risk Management</h2>
+  <p>Monitor participant safety and risk flags.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Participant ID</th>
+        <th>Risk Flag</th>
+        <th>Date Reported</th>
+        <th>Action Taken</th>
+      </tr>
+    </thead>
+    <tbody id="riskTableBody">
+      <tr>
+        <td>P101</td>
+        <td>Suicidal Ideation (Tier 2)</td>
+        <td>2025-05-28</td>
+        <td>Contacted participant, referred to crisis services</td>
+      </tr>
+      <tr>
+        <td>P104</td>
+        <td>Moderate Risk (Tier 1)</td>
+        <td>2025-06-02</td>
+        <td>Provided resources, monitoring</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 20px;">Action Plan</h3>
+  <p><em>Document participant's high-risk status and next steps.</em></p>
+  <textarea placeholder="Enter action plan details here..." style="width:100%; height:100px;"></textarea>
+  <button class="btn" style="margin-top: 10px;">Save Action Plan</button>
+</section>
+
+<!-- LogBook Tab -->
+<section id="logbook" class="tab-content">
+  <h2>Study LogBook</h2>
+
+  <button onclick="exportLogbook()">Download LogBook</button>
+
+  <table style="margin-top: 20px;">
+    <thead>
+      <tr>
+        <th>Study ID</th>
+        <th>Randomization Code</th>
+        <th>Study Status</th>
+        <th>eSP Link</th>
+        <th>MRT Randomization</th>
+        <th>Follow-Ups</th>
+        <th>Compensation</th>
+        <th>Contact Info</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>00123</td>
+        <td>MRT</td>
+        <td>Active</td>
+        <td><a href="#">View eSP</a></td>
+        <td>AM/PM slots randomized, 60% delivery</td>
+        <td>Jul 15, Aug 15</td>
+        <td>$30 (2 follow-ups completed)</td>
+        <td>john.doe@email.com<br/>555-123-4567</td>
+      </tr>
+      <tr>
+        <td>00124</td>
+        <td>Control</td>
+        <td>Completed</td>
+        <td><a href="#">View eSP</a></td>
+        <td>N/A</td>
+        <td>May 10, Jun 10</td>
+        <td>$40 (3 follow-ups)</td>
+        <td>jane.smith@email.com<br/>555-987-6543</td>
+      </tr>
+      <!-- Add more rows as needed -->
+    </tbody>
+  </table>
+</section>
+
+<script>
+  function exportLogbook() {
+    alert("Exporting logbook as CSV or Excel (backend function not implemented in this mockup)");
+    // You can hook this to an actual download or export function using JS + backend.
+  }
+</script>
+
+<!-- Budget Tab -->
+<section id="budget" class="tab-content">
+  <h2>Study Budget Management</h2>
+
+  <table class="budget-table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Allocated ($)</th>
+        <th>Spent ($)</th>
+        <th>Remaining ($)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Personnel</td>
+        <td><input type="number" id="budgetAllocatedPersonnel" value="50000" /></td>
+        <td><input type="number" id="budgetSpentPersonnel" value="20000" /></td>
+        <td><input type="number" id="budgetRemainingPersonnel" value="30000" readonly /></td>
+      </tr>
+      <tr>
+        <td>Equipment</td>
+        <td><input type="number" id="budgetAllocatedEquipment" value="10000" /></td>
+        <td><input type="number" id="budgetSpentEquipment" value="5500" /></td>
+        <td><input type="number" id="budgetRemainingEquipment" value="4500" readonly /></td>
+      </tr>
+      <tr>
+        <td>Travel</td>
+        <td><input type="number" id="budgetAllocatedTravel" value="8000" /></td>
+        <td><input type="number" id="budgetSpentTravel" value="3000" /></td>
+        <td><input type="number" id="budgetRemainingTravel" value="5000" readonly /></td>
+      </tr>
+      <tr>
+        <td>Miscellaneous</td>
+        <td><input type="number" id="budgetAllocatedMisc" value="5000" /></td>
+        <td><input type="number" id="budgetSpentMisc" value="1200" /></td>
+        <td><input type="number" id="budgetRemainingMisc" value="3800" readonly /></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script>
+  // Tab switching for main tabs
+  const tabButtons = document.querySelectorAll('nav button.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      document.getElementById(tab).classList.add('active');
+    });
+  });
+
+  // Enrollment subtabs
+  const subtabButtons = document.querySelectorAll('.subtabs button.subtab-btn');
+  const subtabContents = document.querySelectorAll('.subtab-content');
+
+  subtabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      subtabButtons.forEach(b => b.classList.remove('active'));
+      subtabContents.forEach(c => (c.style.display = 'none'));
+      btn.classList.add('active');
+      const subtab = btn.dataset.subtab;
+      document.getElementById(subtab).style.display = 'block';
+    });
+  });
+
+  // Intervention Messages - show/hide scheduling inputs based on "Send Now" checkbox
+  const sendNowCheckbox = document.getElementById('sendNow');
+  const scheduleContainer = document.getElementById('scheduleContainer');
+
+  sendNowCheckbox.addEventListener('change', () => {
+    if (sendNowCheckbox.checked) {
+      scheduleContainer.style.display = 'none';
+    } else {
+      scheduleContainer.style.display = 'block';
+    }
+  });
+
+  // Send Message button - simple alert and add to message history
+  const sendMessageBtn = document.getElementById('sendMessageBtn');
+  const messageHistoryBody = document.getElementById('messageHistoryBody');
+
+  sendMessageBtn.addEventListener('click', () => {
+    const participant = document.getElementById('messageParticipant').value.trim();
+    const message = document.getElementById('messageText').value.trim();
+    const sendNow = sendNowCheckbox.checked;
+    const date = document.getElementById('scheduleDate').value;
+    const time = document.getElementById('scheduleTime').value;
+
+    if (!participant) {
+      alert('Please enter Participant ID.');
+      return;
+    }
+    if (!message) {
+      alert('Please enter a message.');
+      return;
+    }
+    let sendTimeText = 'now';
+    if (!sendNow) {
+      if (!date || !time) {
+        alert('Please select date and time for scheduling.');
+        return;
+      }
+      sendTimeText = `${date} ${time}`;
+    }
+
+    alert(`Message for ${participant} scheduled to send ${sendTimeText}.`);
+
+    // Add to message history (simple)
+    const tr = document.createElement('tr');
+    const now = new Date();
+    const sentAt = sendNow ? now.toLocaleString() : `${date} ${time}`;
+    tr.innerHTML = `
+      <td>${participant}</td>
+      <td>${message}</td>
+      <td>${sentAt}</td>
+      <td>${sendNow ? 'Sent' : 'Scheduled'}</td>
+    `;
+    messageHistoryBody.prepend(tr);
+
+    // Clear inputs
+    document.getElementById('messageParticipant').value = '';
+    document.getElementById('messageText').value = '';
+    sendNowCheckbox.checked = true;
+    scheduleContainer.style.display = 'none';
+    document.getElementById('scheduleDate').value = '';
+    document.getElementById('scheduleTime').value = '';
+  });
+
+  // Follow-Up tab example appointments
+  const appointments = {
+    mondayAppointments: [
+      {participant: 'P101', time: '10:00 AM'},
+      {participant: 'P105', time: '3:00 PM'},
+    ],
+    tuesdayAppointments: [
+      {participant: 'P102', time: '11:00 AM'},
+    ],
+    wednesdayAppointments: [
+      {participant: 'P103', time: '9:30 AM'},
+    ],
+    thursdayAppointments: [
+      {participant: 'P104', time: '1:00 PM'},
+    ],
+    fridayAppointments: []
+  };
+
+  for (const [dayId, appts] of Object.entries(appointments)) {
+    const container = document.getElementById(dayId);
+    appts.forEach(a => {
+      const div = document.createElement('div');
+      div.className = 'appointment';
+      div.textContent = `${a.participant} - ${a.time}`;
+      container.appendChild(div);
+    });
+  }
+
+  // LogBook de-identify toggle (just toggles text placeholder here)
+  const toggleDeIdCheckbox = document.getElementById('toggleDeId');
+  const logNotes = document.getElementById('logNotes');
+
+  toggleDeIdCheckbox.addEventListener('change', () => {
+    if (toggleDeIdCheckbox.checked) {
+      logNotes.placeholder = 'De-identified logs are shown here...';
+    } else {
+      logNotes.placeholder = 'Write your notes here...';
+    }
+  });
+
+  // Save notes button (simple alert)
+  document.getElementById('saveLogBtn').addEventListener('click', () => {
+    alert('Notes saved.');
+  });
+
+  // Budget tab - automatically update Remaining when Allocated or Spent changes
+  const budgetFields = [
+    {allocated: 'budgetAllocatedPersonnel', spent: 'budgetSpentPersonnel', remaining: 'budgetRemainingPersonnel'},
+    {allocated: 'budgetAllocatedEquipment', spent: 'budgetSpentEquipment', remaining: 'budgetRemainingEquipment'},
+    {allocated: 'budgetAllocatedTravel', spent: 'budgetSpentTravel', remaining: 'budgetRemainingTravel'},
+    {allocated: 'budgetAllocatedMisc', spent: 'budgetSpentMisc', remaining: 'budgetRemainingMisc'},
+  ];
+
+  function updateRemaining(allocatedId, spentId, remainingId) {
+    const allocated = parseFloat(document.getElementById(allocatedId).value) || 0;
+    const spent = parseFloat(document.getElementById(spentId).value) || 0;
+    const remainingInput = document.getElementById(remainingId);
+    const remaining = allocated - spent;
+    remainingInput.value = remaining >= 0 ? remaining.toFixed(2) : '0.00';
+  }
+
+  budgetFields.forEach(field => {
+    document.getElementById(field.allocated).addEventListener('input', () => {
+      updateRemaining(field.allocated, field.spent, field.remaining);
+    });
+    document.getElementById(field.spent).addEventListener('input', () => {
+      updateRemaining(field.allocated, field.spent, field.remaining);
+    });
+  });
+
+</script>
+
+</body>
+</html>
